@@ -1,0 +1,1 @@
+export async function callFn(name,payload){const r=await fetch(`https://regal-twilight-9cd2c6.netlify.app/.netlify/functions/${name}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload||{})});if(!r.ok) throw new Error(await r.text());return r.json()}

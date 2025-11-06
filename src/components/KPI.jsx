@@ -1,0 +1,1 @@
+import React from 'react';export default ({label,value,hint})=> (<div className='kpi'><h3>{label}</h3><div className='v'>{value}</div>{hint&&<div className='muted' style={{marginTop:6}}>{hint}</div>}</div>)
