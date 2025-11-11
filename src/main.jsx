@@ -42,31 +42,22 @@ const App = () => {
 
   const exp = useAsync(), rt = useAsync(), root = useAsync();
 
-  // Calculate number of critical events
-  const critical = events.filter(
-    e => e.metrics.temp > 55 && e.metrics.current > 2
-  ).length;
+  // Calculate critical events
+  const critical = events.filter(e => e.metrics.temp > 55 && e.metrics.current > 2).length;
 
   // Update metric
   const updateMetric = (i, key, val) => {
     const next = [...events];
-    next[i] = {
-      ...next[i],
-      metrics: { ...next[i].metrics, [key]: +val },
-    };
+    next[i] = { ...next[i], metrics: { ...next[i].metrics, [key]: +val } };
     setEvents(next);
   };
 
-  // Add/remove
-  const addEvent = () => {
-    setEvents([
-      ...events,
-      { id: `E-${events.length + 1}`, metrics: { temp: 40, voltage: 3.5, current: 1.2, vibration: 0.2, humidity: 45 } },
-    ]);
-  };
+  // Add / Remove event
+  const addEvent = () =>
+    setEvents([...events, { id: `E-${events.length + 1}`, metrics: { temp: 40, voltage: 3.5, current: 1.2, vibration: 0.2, humidity: 45 } }]);
   const removeEvent = (i) => setEvents(events.filter((_, k) => k !== i));
 
-  // Style helper for anomaly highlighting
+  // Highlight anomalies
   const anomalyStyle = (m) => {
     if (m.temp > 60 || m.current > 3) return { border: "1px solid #ff6060", background: "rgba(255,60,60,.1)" };
     if (m.temp > 50 || m.current > 2) return { border: "1px solid #ffcc33", background: "rgba(255,230,100,.08)" };
@@ -74,8 +65,16 @@ const App = () => {
   };
 
   return (
-    <div className="wrap">
-      {/* HEADER */}
+    <div className="wrap fade-in">
+
+      {/* ✅ Back to Home Button */}
+      <div className="btn-back-container">
+        <a href="https://energy-verse-portal.netlify.app/?feature=12" className="btn-back-scroll">
+          ← Back to Home
+        </a>
+      </div>
+
+      {/* Header */}
       <div className="title">
         <div>
           <h1>Real-time Fault / Anomaly — Dashboard</h1>
@@ -96,8 +95,9 @@ const App = () => {
         <KPI label="Inputs Editable" value="Yes" hint="Adjust event metrics below" />
       </div>
 
+      {/* Grid Layout */}
       <div className="grid" style={{ marginTop: 16 }}>
-        {/* LEFT COLUMN */}
+        {/* Left Column */}
         <div className="leftcol">
           <div className="card">
             <h3>Events</h3>
@@ -139,14 +139,11 @@ const App = () => {
               ))}
             </div>
 
-            <button style={{ marginTop: 10 }} onClick={addEvent}>➕ Add Event</button>
-
-            
-          
+            <button className="btn-soft" style={{ marginTop: 10 }} onClick={addEvent}>➕ Add Event</button>
           </div>
         </div>
 
-        {/* RIGHT COLUMN */}
+        {/* Right Column */}
         <div className="rightcol">
           <div className="card col-span-12">
             <h3>Aggregate Window — Counts by Severity</h3>
@@ -154,16 +151,11 @@ const App = () => {
               <ResponsiveContainer width="100%" height={240}>
                 <BarChart data={Object.entries(rt.data.counts).map(([k, v]) => ({ level: k, count: v }))}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="level" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
+                  <XAxis dataKey="level" /><YAxis /><Tooltip /><Legend />
                   <Bar dataKey="count" fill="#caff37" />
                 </BarChart>
               </ResponsiveContainer>
-            ) : (
-              <div className="muted">Click Aggregate.</div>
-            )}
+            ) : <div className="muted">Click Aggregate.</div>}
           </div>
 
           <div className="card col-span-6">
